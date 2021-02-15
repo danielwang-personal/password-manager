@@ -20,9 +20,15 @@ def show_all():
 def add_one(website,username,password):
     conn = sqlite3.connect('pwmanager.db')
     c = conn.cursor()
+
     c.execute("INSERT INTO passwords VALUES (?,?,?)", (website, username, password))
     conn.commit()
     conn.close()
+
+    # clear text boxes
+    # website.delete(0, END)
+    # username.delete(0, END)
+    # password.delete(0, END )
 
 # Delete record from table
 def delete_one(id):
