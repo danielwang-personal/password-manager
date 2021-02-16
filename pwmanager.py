@@ -1,13 +1,23 @@
 import sqlite3
 from tkinter import *
+from cryptography.fernet import Fernet
 
 conn = sqlite3.connect('pwmanager.db')
 c = conn.cursor() 
+
+# c.execute("""CREATE TABLE passwords (
+#         website text,
+#         username text,
+#         password text
+#     )""")
 
 root = Tk()
 root.title('Password Manager')
 root.geometry("400x600")
 
+file = open('key.txt', 'rb')
+key = file.read() # key is in bytes
+file.close()
 
 
 # Query the databse and return ALL records
@@ -26,7 +36,13 @@ def show_all():
     i = 14
 
     for item in items:
-        entry = item[0] + "     " + item[1] + "     " + item[2] + "\n"
+        # decrypt password
+        f2 = Fernet(key)
+        decrypted = f2.decrypt(item[2])
+        # decode
+        original_password = decrypted.decode()
+
+        entry = item[0] + "     " + item[1] + "     " + original_password + "\n"
         entry_label = Label(root, text=entry)
         entry_label.grid(row=i, column=0, columnspan=2)
         i += 1    
@@ -45,12 +61,21 @@ def add_one():
     username_input = username_field.get()
     password_input = password_field.get()
 
+    # encrypt password
+    
+    # encode password
+    message = password_input
+    encoded = message.encode()
+
+    # encrypt password
+    f = Fernet(key)
+    encrypted = f.encrypt(encoded)
 
     c.execute("INSERT INTO passwords VALUES (:website, :username, :password)", 
             {
                 'website': website_input,
                 'username': username_input,
-                'password': password_input,
+                'password': encrypted, # encrypted as bytes
             }
     )
     conn.commit()
@@ -71,7 +96,15 @@ def show_one():
     c.execute("SELECT * FROM passwords WHERE website = (?)", (retrieve_input,))
     items = c.fetchall()
     for item in items:
-        entry = item[1] + "     " + item[2] + "\n"
+
+        # decrypt password
+        f2 = Fernet(key)
+        decrypted = f2.decrypt(item[2])
+        # decode
+        original_password = decrypted.decode()
+
+
+        entry = item[1] + "     " + original_password + "\n"
         entry_label = Label(root, text=entry)
         entry_label.grid(row=8, column=0, columnspan=4, ipadx=100)
     conn.commit()
