@@ -22,8 +22,8 @@ def show_all():
     show_passwords = ''
     show_passwords = "WEBSITE ------ USERNAME ----- PASSWORD\n"
     text_label = Label(root, text = show_passwords)
-    text_label.grid(row=10, column=0, columnspan=2)
-    i = 11
+    text_label.grid(row=13, column=0, columnspan=2)
+    i = 14
 
     for item in items:
         entry = item[0] + "     " + item[1] + "     " + item[2] + "\n"
@@ -80,12 +80,17 @@ def show_one():
     retrieve_field.delete(0, END)
 
 # Delete record from table
-def delete_one(id):
+def delete_one():
     conn = sqlite3.connect('pwmanager.db')
     c = conn.cursor()
-    c.execute("DELETE from passwords WHERE rowid = (?)", id)
+
+    delete_input = delete_field.get()
+
+    c.execute("DELETE from passwords WHERE website = (?)", (delete_input,))
     conn.commit()
     conn.close()
+
+    delete_field.delete(0, END)
 
 # Create welcome box
 welcome_msg = "Welcome.\nPlease enter your username and password below,\nand the website you are using these credentials with."
@@ -121,7 +126,7 @@ white_box = Label(root, text="\n").grid(row=8, column=0)
 
 # # Create a query button to show all records
 query_button = Button(root, text="Show all logins", command=show_all)
-query_button.grid(row=9, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
+query_button.grid(row=12, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
 
 # Create a button to retrieve a particular record
 retrieve_label = Label(root, text="Enter website to retrieve credentials for")
@@ -131,6 +136,13 @@ retrieve_field.grid(row=6, column=0, columnspan=2)
 retrieve_button = Button(root, text="Retrieve login for this website", command=show_one)
 retrieve_button.grid(row=7, column=0, columnspan=2, pady=10, padx=10, ipadx=120)
 
+# Create a button to delete a particular record
+delete_label = Label(root, text="Enter website to DELETE credentials for")
+delete_label.grid(row=9, column=0, columnspan=2, pady=10)
+delete_field = Entry(root, width=30)
+delete_field.grid(row=10, column=0, columnspan=2)
+delete_button = Button(root, text="DELETE login for this website", command=delete_one)
+delete_button.grid(row=11, column=0, columnspan=2, pady=10, padx=10, ipadx=120)
 
 root.mainloop()
 
