@@ -1,3 +1,4 @@
+''' password manager which includes a simple GUI made with tkinter '''
 import sqlite3
 from tkinter import *
 from cryptography.fernet import Fernet
