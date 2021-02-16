@@ -1,3 +1,5 @@
+''' Genereate a key using this script before using the password manager '''
+
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
