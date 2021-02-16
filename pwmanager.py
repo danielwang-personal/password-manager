@@ -1,9 +1,12 @@
 import sqlite3
 from tkinter import *
 
+conn = sqlite3.connect('pwmanager.db')
+c = conn.cursor() 
+
 root = Tk()
 root.title('Password Manager')
-root.geometry("400x400")
+root.geometry("400x600")
 
 
 
@@ -19,8 +22,8 @@ def show_all():
     show_passwords = ''
     show_passwords = "WEBSITE ------ USERNAME ----- PASSWORD\n"
     text_label = Label(root, text = show_passwords)
-    text_label.grid(row=5, column=0, columnspan=2)
-    i = 6
+    text_label.grid(row=10, column=0, columnspan=2)
+    i = 11
 
     for item in items:
         entry = item[0] + "     " + item[1] + "     " + item[2] + "\n"
@@ -58,6 +61,24 @@ def add_one():
     username_field.delete(0, END)
     password_field.delete(0, END )
 
+# Show one particular record
+def show_one():
+    conn = sqlite3.connect('pwmanager.db')
+    c = conn.cursor()
+
+    retrieve_input = retrieve_field.get()
+
+    c.execute("SELECT * FROM passwords WHERE website = (?)", (retrieve_input,))
+    items = c.fetchall()
+    for item in items:
+        entry = item[1] + "     " + item[2] + "\n"
+        entry_label = Label(root, text=entry)
+        entry_label.grid(row=8, column=0, columnspan=4, ipadx=100)
+    conn.commit()
+    conn.close()
+
+    retrieve_field.delete(0, END)
+
 # Delete record from table
 def delete_one(id):
     conn = sqlite3.connect('pwmanager.db')
@@ -66,34 +87,49 @@ def delete_one(id):
     conn.commit()
     conn.close()
 
+# Create welcome box
+welcome_msg = "Welcome.\nPlease enter your username and password below,\nand the website you are using these credentials with."
+welcome_label = Label(root, text=welcome_msg)
+welcome_label.grid(row=0, column=0, padx=10, pady=20, columnspan=2)
 
 # Create text boxes
 website_field = Entry(root, width=30)
-website_field.grid(row=0, column=1, padx=20)
+website_field.grid(row=1, column=1, padx=20)
 
 username_field = Entry(root, width=30)
-username_field.grid(row=1, column=1, padx=20)
+username_field.grid(row=2, column=1, padx=10)
 
 password_field = Entry(root, width=30)
-password_field.grid(row=2, column=1, padx=20)
+password_field.grid(row=3, column=1, padx=10)
 
 # Create text box labels
 website_label = Label(root, text="Website")
-website_label.grid(row=0, column=0)
+website_label.grid(row=1, column=0)
 
 username_label = Label(root, text="Username")
-username_label.grid(row=1, column=0)
+username_label.grid(row=2, column=0)
 
 password_label = Label(root, text="Password")
-password_label.grid(row=2, column=0)
+password_label.grid(row=3, column=0)
 
 # Create submit button
 submit_button = Button(root, text="Add record to password manager", command=add_one)
-submit_button.grid(row=3, column=0, columnspan=2, pady=10, padx=10, ipadx=100)
+submit_button.grid(row=4, column=0, columnspan=2, pady=10, padx=10, ipadx=100)
 
-# Create a query button
-query_button = Button(root, text="Show passwords", command=show_all)
-query_button.grid(row=4, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
+# Create white box
+white_box = Label(root, text="\n").grid(row=8, column=0)
+
+# # Create a query button to show all records
+query_button = Button(root, text="Show all logins", command=show_all)
+query_button.grid(row=9, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
+
+# Create a button to retrieve a particular record
+retrieve_label = Label(root, text="Enter website to retrieve credentials for")
+retrieve_label.grid(row=5, column=0, columnspan=2, pady=10)
+retrieve_field = Entry(root, width=30)
+retrieve_field.grid(row=6, column=0, columnspan=2)
+retrieve_button = Button(root, text="Retrieve login for this website", command=show_one)
+retrieve_button.grid(row=7, column=0, columnspan=2, pady=10, padx=10, ipadx=120)
 
 
 root.mainloop()
