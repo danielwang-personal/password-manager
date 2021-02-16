@@ -11,3 +11,7 @@ TO DO:
 REQUIREMENTS:
 - should be able to type a site into pw manager and retrieve a pw
 - pw can be directly stored and retrieved from SQL
+
+
+EDIT 15/2/2021:
+now using SQLite3 instead of mySQL
