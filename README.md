@@ -1,4 +1,8 @@
 # password-manager
+
+- use key.py to generate a key into key.txt before using the password manager
+
+
 using sql to store passwords
 
 TO DO:
