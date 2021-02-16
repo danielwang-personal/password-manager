@@ -6,6 +6,7 @@ from cryptography.fernet import Fernet
 conn = sqlite3.connect('pwmanager.db')
 c = conn.cursor() 
 
+# Uncomment and run this section if it is your FIRST time running this script
 # c.execute("""CREATE TABLE passwords (
 #         website text,
 #         username text,
@@ -36,13 +37,14 @@ def show_all():
     text_label.grid(row=13, column=0, columnspan=2)
     i = 14
 
+    white_box = Label(root, text="\n").grid(row=14, column=0, ipadx=100)
+
     for item in items:
         # decrypt password
         f2 = Fernet(key)
         decrypted = f2.decrypt(item[2])
         # decode
         original_password = decrypted.decode()
-
         entry = item[0] + "     " + item[1] + "     " + original_password + "\n"
         entry_label = Label(root, text=entry)
         entry_label.grid(row=i, column=0, columnspan=2)
@@ -61,8 +63,6 @@ def add_one():
     website_input = website_field.get()
     username_input = username_field.get()
     password_input = password_field.get()
-
-    # encrypt password
     
     # encode password
     message = password_input
@@ -103,7 +103,6 @@ def show_one():
         decrypted = f2.decrypt(item[2])
         # decode
         original_password = decrypted.decode()
-
 
         entry = item[1] + "     " + original_password + "\n"
         entry_label = Label(root, text=entry)
@@ -165,53 +164,24 @@ query_button.grid(row=12, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
 # Create a button to retrieve a particular record
 retrieve_label = Label(root, text="Enter website to retrieve credentials for")
 retrieve_label.grid(row=5, column=0, columnspan=2, pady=10)
+
 retrieve_field = Entry(root, width=30)
 retrieve_field.grid(row=6, column=0, columnspan=2)
+
 retrieve_button = Button(root, text="Retrieve login for this website", command=show_one)
 retrieve_button.grid(row=7, column=0, columnspan=2, pady=10, padx=10, ipadx=120)
 
 # Create a button to delete a particular record
 delete_label = Label(root, text="Enter website to DELETE credentials for")
 delete_label.grid(row=9, column=0, columnspan=2, pady=10)
+
 delete_field = Entry(root, width=30)
 delete_field.grid(row=10, column=0, columnspan=2)
+
 delete_button = Button(root, text="DELETE login for this website", command=delete_one)
 delete_button.grid(row=11, column=0, columnspan=2, pady=10, padx=10, ipadx=120)
 
 root.mainloop()
 
 
-
-
-
-# CREATE A TABLE
-# c.execute("""CREATE TABLE passwords (
-#         website text,
-#         username text,
-#         password text
-#     )""")
-
-# DROP TABLE
-# c.execute("DROP TABLE passwords")
-
-# conn.commit()
-# INSERT INTO TABLE
-# c.execute("INSERT INTO passwords VALUES ('Google', 'jack3', 'password123')")
-
-# UPDATE RECORDS
-# c.execute("""UPDATE passwords SET username = 'jack@gmail.com'
-#             WHERE rowid = 2
-#     """)
-
-# conn.commit()
-
-# DELETE RECORDS
-
-# QUERY THE DATABASE
-# c.execute("SELECT rowid, * FROM passwords ORDER BY rowid DESC")
-# c.execute("SELECT rowid, * FROM passwords WHERE username LIKE 'dan%'")
-# items = c.fetchall()
-
-# for item in items:
-#     print(item)
 
