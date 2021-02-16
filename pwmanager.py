@@ -215,8 +215,3 @@ root.mainloop()
 # for item in items:
 #     print(item)
 
-# # COMMIT THE COMMAND
-# conn.commit()
-
-# # CLOSE CONNECTION
-# conn.close()
